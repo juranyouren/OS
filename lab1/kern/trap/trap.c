@@ -114,9 +114,7 @@ void interrupt_handler(struct trapframe *tf) {
              *(3)当计数器加到100的时候，我们会输出一个`100ticks`表示我们触发了100次时钟中断，同时打印次数（num）加一
             * (4)判断打印次数，当打印次数为10时，调用<sbi.h>中的关机函数关机
             */
-            asm volatile (
-"mret"
-);
+
             break;
 	    
         case IRQ_H_TIMER:
@@ -150,6 +148,7 @@ void exception_handler(struct trapframe *tf) {
         case CAUSE_FAULT_FETCH:
             break;
         case CAUSE_ILLEGAL_INSTRUCTION:
+         //Lab1 2211448
              // 非法指令异常处理
              /* LAB1 CHALLENGE3   YOUR CODE :  */
             /*(1)输出指令异常类型（ Illegal instruction）
@@ -162,6 +161,7 @@ void exception_handler(struct trapframe *tf) {
             tf->epc += 4;  // 每条指令4字节
             break;
         case CAUSE_BREAKPOINT:
+         //Lab1 2211448
             //断点异常处理
             /* LAB1 CHALLLENGE3   YOUR CODE :  */
             /*(1)输出指令异常类型（ breakpoint）

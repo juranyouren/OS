@@ -33,6 +33,13 @@ int kern_init(void) {
 
     intr_enable();  // enable irq interrupt
     
+    //Lab1 2211448
+       asm volatile (
+"mret"
+);
+asm volatile (
+    "ebreak"
+);
     while (1)
         ;
 }
