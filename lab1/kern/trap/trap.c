@@ -148,9 +148,8 @@ void exception_handler(struct trapframe *tf) {
         case CAUSE_FAULT_FETCH:
             break;
         case CAUSE_ILLEGAL_INSTRUCTION:
-         //Lab1 2211448
              // 非法指令异常处理
-             /* LAB1 CHALLENGE3   YOUR CODE :  */
+             /* LAB1 CHALLENGE3   2211448 :  */
             /*(1)输出指令异常类型（ Illegal instruction）
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
@@ -158,12 +157,21 @@ void exception_handler(struct trapframe *tf) {
             cprintf("Illegal instruction caught at 0x%08x\n", tf->epc);
             cprintf("Exception type: Illegal instruction\n");
             // 更新epc寄存器，设置为下一条指令地址
-            tf->epc += 4;  // 每条指令4字节
+            // 读取指令内容（16位）
+            uint16_t inst16 = *(uint16_t *)(uintptr_t)(tf->epc);
+            
+            // 判断是否为压缩指令
+            if ((inst16 & 0x3) != 0x3) { // 压缩指令
+                
+                tf->epc += 2; // 16位指令长度
+            } else { // 标准指令
+                
+                tf->epc += 4; // 32位指令长度
+            }
             break;
         case CAUSE_BREAKPOINT:
-         //Lab1 2211448
             //断点异常处理
-            /* LAB1 CHALLLENGE3   YOUR CODE :  */
+            /* LAB1 CHALLLENGE3   2211448 :  */
             /*(1)输出指令异常类型（ breakpoint）
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
@@ -171,7 +179,17 @@ void exception_handler(struct trapframe *tf) {
             cprintf("ebreak caught at 0x%08x\n", tf->epc);
             cprintf("Exception type: breakpoint\n");
             // 更新epc寄存器，设置为下一条指令地址
-            tf->epc += 4;  // 假设每条指令4字节
+            // 读取指令内容（16位）
+            uint16_t bp_inst16 = *(uint16_t *)(uintptr_t)(tf->epc);
+            
+            // 判断是否为压缩指令
+            if ((bp_inst16 & 0x3) != 0x3) { // 压缩指令
+                
+                tf->epc += 2; // 16位指令长度
+            } else { // 标准指令
+                
+                tf->epc += 4; // 32位指令长度
+            }
             break;
         case CAUSE_MISALIGNED_LOAD:
             break;
