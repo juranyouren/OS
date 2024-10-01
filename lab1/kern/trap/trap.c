@@ -114,7 +114,7 @@ void interrupt_handler(struct trapframe *tf) {
              *(3)当计数器加到100的时候，我们会输出一个`100ticks`表示我们触发了100次时钟中断，同时打印次数（num）加一
             * (4)判断打印次数，当打印次数为10时，调用<sbi.h>中的关机函数关机
             */
-            
+
             break;
 	    
         case IRQ_H_TIMER:
@@ -149,19 +149,47 @@ void exception_handler(struct trapframe *tf) {
             break;
         case CAUSE_ILLEGAL_INSTRUCTION:
              // 非法指令异常处理
-             /* LAB1 CHALLENGE3   YOUR CODE :  */
+             /* LAB1 CHALLENGE3   2211448 :  */
             /*(1)输出指令异常类型（ Illegal instruction）
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
             */
+            cprintf("Illegal instruction caught at 0x%08x\n", tf->epc);
+            cprintf("Exception type: Illegal instruction\n");
+            // 更新epc寄存器，设置为下一条指令地址
+            // 读取指令内容（16位）
+            uint16_t inst16 = *(uint16_t *)(uintptr_t)(tf->epc);
+            
+            // 判断是否为压缩指令
+            if ((inst16 & 0x3) != 0x3) { // 压缩指令
+                
+                tf->epc += 2; // 16位指令长度
+            } else { // 标准指令
+                
+                tf->epc += 4; // 32位指令长度
+            }
             break;
         case CAUSE_BREAKPOINT:
             //断点异常处理
-            /* LAB1 CHALLLENGE3   YOUR CODE :  */
+            /* LAB1 CHALLLENGE3   2211448 :  */
             /*(1)输出指令异常类型（ breakpoint）
              *(2)输出异常指令地址
              *(3)更新 tf->epc寄存器
             */
+            cprintf("ebreak caught at 0x%08x\n", tf->epc);
+            cprintf("Exception type: breakpoint\n");
+            // 更新epc寄存器，设置为下一条指令地址
+            // 读取指令内容（16位）
+            uint16_t bp_inst16 = *(uint16_t *)(uintptr_t)(tf->epc);
+            
+            // 判断是否为压缩指令
+            if ((bp_inst16 & 0x3) != 0x3) { // 压缩指令
+                
+                tf->epc += 2; // 16位指令长度
+            } else { // 标准指令
+                
+                tf->epc += 4; // 32位指令长度
+            }
             break;
         case CAUSE_MISALIGNED_LOAD:
             break;
