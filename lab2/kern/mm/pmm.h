@@ -14,7 +14,7 @@
 // XXX_pmm_manager can be used
 // by ucore to manage the total physical memory space.
 
-extern ppn_t first_ppn;
+
 
 
 struct pmm_manager {
@@ -37,6 +37,7 @@ struct pmm_manager {
 };
 
 extern const struct pmm_manager *pmm_manager;
+extern ppn_t first_ppn;
 
 void pmm_init(void);
 
