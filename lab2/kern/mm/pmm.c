@@ -18,6 +18,7 @@ struct Page *pages;
 size_t npage = 0;
 // the kernel image is mapped at VA=KERNBASE and PA=info.base
 uint64_t va_pa_offset;
+ppn_t first_ppn = 525127;
 // memory starts at 0x80000000 in RISC-V
 // DRAM_BASE defined in riscv.h as 0x80000000
 const size_t nbase = DRAM_BASE / PGSIZE;
@@ -30,8 +31,6 @@ uintptr_t satp_physical;
 // physical memory management
 const struct pmm_manager *pmm_manager;
 
-// 定义第⼀个可分配的物理内存⻚在pages数组的下标
-ppn_t first_ppn = 525127;
 
 static void check_alloc_page(void);
 
