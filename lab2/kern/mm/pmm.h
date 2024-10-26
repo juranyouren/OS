@@ -13,6 +13,10 @@
 // only needs to implement the methods in pmm_manager class, then
 // XXX_pmm_manager can be used
 // by ucore to manage the total physical memory space.
+
+
+
+
 struct pmm_manager {
     const char *name;  // XXX_pmm_manager's name
     void (*init)(
@@ -33,6 +37,7 @@ struct pmm_manager {
 };
 
 extern const struct pmm_manager *pmm_manager;
+extern ppn_t first_ppn;
 
 void pmm_init(void);
 

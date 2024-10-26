@@ -10,6 +10,7 @@
 #include <string.h>
 #include <../sync/sync.h>
 #include <riscv.h>
+#include <buddy_pmm.h>
 
 // virtual address of physical page array
 struct Page *pages;
@@ -17,6 +18,7 @@ struct Page *pages;
 size_t npage = 0;
 // the kernel image is mapped at VA=KERNBASE and PA=info.base
 uint64_t va_pa_offset;
+ppn_t first_ppn = 525127;
 // memory starts at 0x80000000 in RISC-V
 // DRAM_BASE defined in riscv.h as 0x80000000
 const size_t nbase = DRAM_BASE / PGSIZE;
@@ -34,7 +36,8 @@ static void check_alloc_page(void);
 
 // init_pmm_manager - initialize a pmm_manager instance
 static void init_pmm_manager(void) {
-    pmm_manager = &best_fit_pmm_manager;
+    //pmm_manager = &best_fit_pmm_manager;
+    pmm_manager = &buddy_pmm_manager;
     cprintf("memory management: %s\n", pmm_manager->name);
     pmm_manager->init();
 }
