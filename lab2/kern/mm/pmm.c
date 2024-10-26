@@ -10,6 +10,7 @@
 #include <string.h>
 #include <../sync/sync.h>
 #include <riscv.h>
+#include <buddy_pmm.h>
 
 // virtual address of physical page array
 struct Page *pages;
@@ -29,12 +30,15 @@ uintptr_t satp_physical;
 // physical memory management
 const struct pmm_manager *pmm_manager;
 
+// 定义第⼀个可分配的物理内存⻚在pages数组的下标
+ppn_t first_ppn = 525127;
 
 static void check_alloc_page(void);
 
 // init_pmm_manager - initialize a pmm_manager instance
 static void init_pmm_manager(void) {
-    pmm_manager = &best_fit_pmm_manager;
+    //pmm_manager = &best_fit_pmm_manager;
+    pmm_manager = &buddy_pmm_manager;
     cprintf("memory management: %s\n", pmm_manager->name);
     pmm_manager->init();
 }
