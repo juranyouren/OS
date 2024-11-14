@@ -61,7 +61,7 @@ _clock_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, in
     // 将页面page插入到页面链表pra_list_head的末尾
     page->visited = 1;
     // 将页面的visited标志置为1，表示该页面已被访问
-    
+    cprintf("curr_ptr %x in fifo_init_mm\n",curr_ptr);
     return 0;
 }
 /*
