@@ -406,6 +406,13 @@ do_pgfault(struct mm_struct *mm, uint_t error_code, uintptr_t addr) {
             //map of phy addr <--->
             //logical addr
             //(3) make the page swappable.
+	    ret = swap_in(mm, addr, &page); // 根据PTE找到换出那页所在的硬盘地址,并将其从外存中换入        
+            if (ret != 0) {
+                cprintf("swap_in in do_pgfault failed\n");
+                goto failed;
+            }
+            page_insert(mm->pgdir, page, addr, perm); // 建立虚拟地址和物理地址之间的对应关系(更新 PTE 因为已经被换入到内存中了)
+            swap_map_swappable(mm, addr, page, 0); // 使这一页可以置换
             page->pra_vaddr = addr;
         } else {
             cprintf("no swap_init_ok but ptep is %x, failed\n", *ptep);
