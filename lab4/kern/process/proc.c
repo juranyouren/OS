@@ -163,6 +163,8 @@ get_pid(void) {
 void
 proc_run(struct proc_struct *proc) {
     if (proc != current) {
+        //检查当前正在运行的进程与将要切换的进程是否一致，如果一致就不切换了
+        
         // LAB4:EXERCISE3 YOUR CODE
         /*
         * Some Useful MACROs, Functions and DEFINEs, you can use them in below implementation.
@@ -172,7 +174,24 @@ proc_run(struct proc_struct *proc) {
         *   lcr3():                   Modify the value of CR3 register
         *   switch_to():              Context switching between two processes
         */
-       
+       //切换进程
+       //禁用中断
+        bool intr_flag;
+        struct proc_struct *prev = current, *next = proc;
+        // 关闭中断,进行进程切换
+        local_intr_save(intr_flag);
+        {
+            //当前进程设为待调度的进程
+            current = proc;
+            //将当前的cr3寄存器改为需要运行进程的页目录表
+            lcr3(next->cr3);
+            //进行上下文切换，保存原线程的寄存器并恢复待调度线程的寄存器
+            switch_to(&(prev->context), &(next->context));
+        }
+        //恢复中断
+        local_intr_restore(intr_flag);
+
+
     }
 }
 
