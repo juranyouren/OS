@@ -390,6 +390,26 @@ int copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end,
              */
 
 
+            //challenge:
+                /*实现cow2：映射共享页面
+                如果share为1，那么将子进程的页面映射到父进程的页面
+                由于两个进程共享一个页面之后，无论如何一个进程修改页面，都会影响另外一个页面
+                所以需要子进程和父进程对于这个共享页面都保持只读。
+                */
+            // if(share){
+            //     //share page
+            //     page_insert(from,page,start,perm&(~PTE_W));
+            //     ret=page_insert(to,page,start,perm&(~PTE_W));
+            // }else{
+            //     //alloc a page for process B
+            //     struct Page *npage=alloc_page();
+            //     assert(npage!=NULL);
+            //     uintptr_t src_kvaddr=page2kva(page);
+            //     uintptr_t dst_kvaddr=page2kva(npage);
+            //     memcpy(dst_kvaddr,src_kvaddr,PGSIZE);
+            //     ret=page_insert(to,npage,start,perm);
+            // }
+            
             assert(ret == 0);
         }
         start += PGSIZE;
